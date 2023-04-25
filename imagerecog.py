@@ -6,9 +6,8 @@ import cv2
 from PIL import Image
 import json
 
-
 def image_recog_one_frame():
-
+    final_output = []
     cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
@@ -57,7 +56,6 @@ def image_recog_one_frame():
             frame_count += 1
             now = time.time()
             if now - last_logged > 1:
-                print(f"{frame_count / (now - last_logged)} fps")
                 last_logged = now
                 frame_count = 0
 
@@ -65,8 +63,7 @@ def image_recog_one_frame():
             top.sort(key=lambda x: x[1], reverse=True)
             for idx, val in top[:10]:
                 if (val.item() * 100):
-                    print(f"{val.item() * 100:.2f}% {classes[str(idx)]}")
-
+                    if (val.item() * 100 > 30):
+                        final_output.append(classes[str(idx)])
             break
-
-image_recog_one_frame()
+    return final_output
